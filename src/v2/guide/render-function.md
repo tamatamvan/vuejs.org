@@ -121,7 +121,7 @@ createElement(
 
 ### The Data Object In-Depth
 
-One thing to note: similar to how `v-bind:class` and `v-bind:style` have special treatment in templates, they have their own top-level fields in VNode data objects.
+One thing to note: similar to how `v-bind:class` and `v-bind:style` have special treatment in templates, they have their own top-level fields in VNode data objects. This object also allows you to bind normal HTML attributes as well as DOM properties such as `innerHTML` (this would replace the `v-html` directive):
 
 ``` js
 {
@@ -299,6 +299,7 @@ render: function (createElement) {
     on: {
       input: function (event) {
         self.value = event.target.value
+        self.$emit('input', event.target.value)
       }
     }
   })
@@ -360,7 +361,7 @@ on: {
 
 ### Slots
 
-You can access static slot contents as Arrays of VNodes from [`this.$slots`](http://vuejs.org/v2/api/#vm-slots):
+You can access static slot contents as Arrays of VNodes from [`this.$slots`](../api/#vm-slots):
 
 ``` js
 render: function (createElement) {
@@ -369,7 +370,7 @@ render: function (createElement) {
 }
 ```
 
-And access scoped slots as functions that return VNodes from [`this.$scopedSlots`](http://vuejs.org/v2/api/#vm-scopedSlots):
+And access scoped slots as functions that return VNodes from [`this.$scopedSlots`](../api/#vm-scopedSlots):
 
 ``` js
 render: function (createElement) {
@@ -477,7 +478,9 @@ Everything the component needs is passed through `context`, which is an object c
 
 After adding `functional: true`, updating the render function of our anchored heading component would simply require adding the `context` argument, updating `this.$slots.default` to `context.children`, then updating `this.level` to `context.props.level`.
 
-Since functional components are just functions, they're much cheaper to render. They're also very useful as wrapper components. For example, when you need to:
+Since functional components are just functions, they're much cheaper to render. However, this also mean that functional components don't show up in VueJS Chrome dev tools component tree.
+
+They're also very useful as wrapper components.  For example, when you need to:
 
 - Programmatically choose one of several other components to delegate to
 - Manipulate children, props, or data before passing them on to a child component

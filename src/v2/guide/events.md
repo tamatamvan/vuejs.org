@@ -144,7 +144,9 @@ new Vue({
 Sometimes we also need to access the original DOM event in an inline statement handler. You can pass it into a method using the special `$event` variable:
 
 ``` html
-<button v-on:click="warn('Form cannot be submitted yet.', $event)">Submit</button>
+<button v-on:click="warn('Form cannot be submitted yet.', $event)">
+  Submit
+</button>
 ```
 
 ``` js
@@ -184,6 +186,7 @@ To address this problem, Vue provides **event modifiers** for `v-on`. Recall tha
 <form v-on:submit.prevent></form>
 
 <!-- use capture mode when adding the event listener -->
+<!-- i.e. an event targeting an inner element is handled here before being handled by that element -->
 <div v-on:click.capture="doThis">...</div>
 
 <!-- only trigger handler if event.target is the element itself -->
@@ -262,6 +265,16 @@ For example:
 ```
 
 <p class="tip">Note that modifier keys are different from regular keys and when used with `keyup` events, they have to be pressed when the event is emitted. In other words, `keyup.ctrl` will only trigger if you release a key while holding down `ctrl`. It won't trigger if you release the `ctrl` key alone.</p>
+
+### Mouse Button Modifiers
+
+> New in 2.2.0
+
+- `.left`
+- `.right`
+- `.middle`
+
+These modifiers restrict the handler to events triggered by a specific mouse button.
 
 ## Why Listeners in HTML?
 

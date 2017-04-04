@@ -49,7 +49,7 @@ var example1 = new Vue({
   },
   watch: {
     items: function () {
-      smoothScroll.animateScroll(null, '#example-1')
+      smoothScroll.animateScroll(document.querySelector('#example-1'))
     }
   }
 })
@@ -99,7 +99,7 @@ var example2 = new Vue({
   },
   watch: {
     items: function () {
-      smoothScroll.animateScroll(null, '#example-2')
+      smoothScroll.animateScroll(document.querySelector('#example-2'))
     }
   }
 })
@@ -218,8 +218,10 @@ new Vue({ el: '#range' })
 You can directly use `v-for` on a custom component, like any normal element:
 
 ``` html
-<my-component v-for="item in items"></my-component>
+<my-component v-for="item in items" :key="item.id"></my-component>
 ```
+
+> In 2.2.0+, when using `v-for` with a component, a [`key`](list.html#key) is now required.
 
 However, this won't automatically pass any data to the component, because components have isolated scopes of their own. In order to pass the iterated data into the component, we should also use props:
 
@@ -227,7 +229,8 @@ However, this won't automatically pass any data to the component, because compon
 <my-component
   v-for="(item, index) in items"
   v-bind:item="item"
-  v-bind:index="index">
+  v-bind:index="index"
+  v-bind:key="item.id">
 </my-component>
 ```
 
@@ -246,6 +249,7 @@ Here's a complete example of a simple todo list:
     <li
       is="todo-item"
       v-for="(todo, index) in todos"
+      v-bind:key="todo"
       v-bind:title="todo"
       v-on:remove="todos.splice(index, 1)"
     ></li>
@@ -255,12 +259,12 @@ Here's a complete example of a simple todo list:
 
 ``` js
 Vue.component('todo-item', {
-  template: '\
-    <li>\
-      {{ title }}\
-      <button v-on:click="$emit(\'remove\')">X</button>\
-    </li>\
-  ',
+  template: `
+    <li>
+      {{ title }}
+      <button v-on:click="$emit('remove')">X</button>
+    </li>
+  `,
   props: ['title']
 })
 
@@ -286,7 +290,7 @@ new Vue({
 {% raw %}
 <div id="todo-list-example" class="demo">
   <input
-    v-model="newTodoText" v
+    v-model="newTodoText"
     v-on:keyup.enter="addNewTodo"
     placeholder="Add a todo"
   >
@@ -294,6 +298,7 @@ new Vue({
     <li
       is="todo-item"
       v-for="(todo, index) in todos"
+      v-bind:key="todo"
       v-bind:title="todo"
       v-on:remove="todos.splice(index, 1)"
     ></li>
@@ -301,12 +306,12 @@ new Vue({
 </div>
 <script>
 Vue.component('todo-item', {
-  template: '\
-    <li>\
-      {{ title }}\
-      <button v-on:click="$emit(\'remove\')">X</button>\
-    </li>\
-  ',
+  template: `
+    <li>
+      {{ title }}
+      <button v-on:click="$emit('remove')">X</button>
+    </li>
+  `,
   props: ['title']
 })
 new Vue({
@@ -387,7 +392,7 @@ You can open the console and play with the previous examples' `items` array by c
 
 ### Replacing an Array
 
-Mutation methods, as the name suggests, mutate the original array they are called on. In comparison, there are also non-mutating methods, e.g. `filter()`, `concat()` and `slice()`, which do not mutate the original Array but **always return a new array**. When working with non-mutating methods, you can just replace the old array with the new one:
+Mutation methods, as the name suggests, mutate the original array they are called on. In comparison, there are also non-mutating methods, e.g. `filter()`, `concat()` and `slice()`, which do not mutate the original array but **always return a new array**. When working with non-mutating methods, you can just replace the old array with the new one:
 
 ``` js
 example1.items = example1.items.filter(function (item) {
@@ -411,7 +416,7 @@ To overcome caveat 1, both of the following will accomplish the same as `vm.item
 Vue.set(example1.items, indexOfItem, newValue)
 ```
 ``` js
-// Array.prototype.splice`
+// Array.prototype.splice
 example1.items.splice(indexOfItem, 1, newValue)
 ```
 
@@ -444,7 +449,7 @@ computed: {
 }
 ```
 
-Alternatively, you can also just use a method where computed properties are not feasible (e.g. inside nested `v-for` loops):
+In situations where computed properties are not feasible (e.g. inside nested `v-for` loops), you can just use a method:
 
 ``` html
 <li v-for="n in even(numbers)">{{ n }}</li>
